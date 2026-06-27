@@ -25,7 +25,7 @@ This project is built using **Clean Architecture** to ensure separation of conce
 ```mermaid
 graph TD
     subgraph "Presentation Layer"
-        Web[CinemaBooking.Web (ASP.NET Core MVC)]
+        Web["CinemaBooking.Web (ASP.NET Core MVC)"]
     end
 
     subgraph "Application Layer (Core)"
@@ -43,9 +43,9 @@ graph TD
 
     subgraph "Domain Layer (Core)"
         Domain[CinemaBooking.Domain]
-        Entities[Entities & Value Objects]
+        Entities["Entities & Value Objects"]
         Exceptions[Domain Exceptions]
-        DomainInterfaces[Repository Interfaces]
+        DomainInterfaces["Repository Interfaces"]
         
         Domain --> Entities
         Domain --> Exceptions
@@ -54,8 +54,8 @@ graph TD
 
     subgraph "Infrastructure Layer"
         Infra[CinemaBooking.Infrastructure]
-        Identity[ASP.NET Core Identity]
-        FileStorage[File Storage Service]
+        Identity["ASP.NET Core Identity"]
+        FileStorage["File Storage Service"]
         
         Infra --> Identity
         Infra --> FileStorage
@@ -63,9 +63,9 @@ graph TD
 
     subgraph "Persistence Layer"
         Persist[CinemaBooking.Persistence]
-        EF[Entity Framework Core]
+        EF["Entity Framework Core"]
         DbCtx[AppDbContext]
-        Repos[Repository Implementations]
+        Repos["Repository Implementations"]
         
         Persist --> EF
         Persist --> DbCtx
