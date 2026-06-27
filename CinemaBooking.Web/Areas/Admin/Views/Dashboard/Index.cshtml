@@ -1,0 +1,182 @@
+@model CinemaBooking.Application.Features.Admin.DashboardStatisticsDto
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row g-4 mb-5">
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="card stat-card hover-lift h-100 border-0 stat-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <p class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Total Movies</p>
+                        <h3 class="mb-0 fw-bold count-up">@Model.TotalMovies</h3>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fa-solid fa-film"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a asp-controller="Movies" asp-action="Index" class="text-primary fw-medium text-decoration-none" style="font-size: 0.85rem;">View all movies <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="card stat-card hover-lift h-100 border-0 stat-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <p class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Total Bookings</p>
+                        <h3 class="mb-0 fw-bold count-up">@Model.TotalBookings</h3>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fa-solid fa-ticket"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a asp-controller="Bookings" asp-action="Index" class="text-success fw-medium text-decoration-none" style="font-size: 0.85rem;">View all bookings <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="card stat-card hover-lift h-100 border-0 stat-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <p class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Revenue</p>
+                        <h3 class="mb-0 fw-bold">$<span class="count-up">@Model.TotalRevenue</span></h3>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fa-solid fa-sack-dollar"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <span class="text-muted fw-medium" style="font-size: 0.85rem;"><i class="fa-solid fa-chart-line text-warning me-1"></i> Lifetime Earnings</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="400">
+        <div class="card stat-card hover-lift h-100 border-0 stat-danger">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <p class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Cinemas</p>
+                        <h3 class="mb-0 fw-bold count-up">@Model.TotalCinemas</h3>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a asp-controller="Cinemas" asp-action="Index" class="text-danger fw-medium text-decoration-none" style="font-size: 0.85rem;">Manage cinemas <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-8" data-aos="fade-up" data-aos-delay="500">
+        <div class="card border-0 h-100">
+            <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-0 pt-4 pb-0">
+                <h6 class="mb-0 fw-bold">Booking Overview</h6>
+            </div>
+            <div class="card-body" style="position: relative; height: 350px; width: 100%;">
+                <canvas id="bookingsChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4" data-aos="fade-up" data-aos-delay="600">
+        <div class="card border-0 h-100 bg-primary text-white" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
+                <div class="mb-4">
+                    <i class="fa-solid fa-rocket fa-4x opacity-50"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Ready for the Next Blockbuster?</h4>
+                <p class="opacity-75 mb-4">You have everything set up. Make sure to update the showtimes for the weekend!</p>
+                <a asp-controller="ShowTimes" asp-action="Create" class="btn btn-light text-primary rounded-pill fw-bold px-4">Add ShowTime</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animated Counters
+            const counters = document.querySelectorAll('.count-up');
+            counters.forEach(counter => {
+                const target = parseInt(counter.innerText, 10);
+                if(!isNaN(target)) {
+                    const countUp = new window.countUp.CountUp(counter, target, { duration: 2.5, separator: ',' });
+                    if (!countUp.error) {
+                        countUp.start();
+                    }
+                }
+            });
+
+            // Chart.js Setup
+            const ctx = document.getElementById('bookingsChart').getContext('2d');
+            
+            // Create Gradient
+            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(37, 99, 235, 0.5)');
+            gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Bookings',
+                        data: [12, 19, 15, 25, 42, 65, 55], // Sample Data
+                        borderColor: '#2563EB',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#2563EB',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#111827',
+                            padding: 12,
+                            titleFont: { family: 'Inter', size: 13 },
+                            bodyFont: { family: 'Inter', size: 14, weight: 'bold' },
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) { return context.parsed.y + ' Bookings'; }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9', drawBorder: false },
+                            ticks: { font: { family: 'Inter' }, color: '#64748b' }
+                        },
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { font: { family: 'Inter' }, color: '#64748b' }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

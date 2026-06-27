@@ -1,0 +1,50 @@
+@model CinemaBooking.Application.Features.Cinemas.UpdateCinemaCommand
+@{
+    ViewData["Title"] = "Edit Cinema";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
+    <div>
+        <h2 class="fw-bold mb-0 text-dark">Edit Cinema</h2>
+        <p class="text-muted mb-0">Update information for cinema ID #@Model.Id</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary shadow-sm hover-lift">
+        <i class="fa-solid fa-arrow-left me-2"></i> Back to List
+    </a>
+</div>
+
+<div class="row" data-aos="fade-up">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4 p-md-5">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="row g-4">
+                        
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <input asp-for="Name" class="form-control" placeholder="Cinema Name" />
+                                <label asp-for="Name"><i class="fa-solid fa-building me-2"></i> Cinema Name</label>
+                                <span asp-validation-for="Name" class="text-danger small mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <input asp-for="Location" class="form-control" placeholder="Location" />
+                                <label asp-for="Location"><i class="fa-solid fa-map-pin me-2"></i> Location</label>
+                                <span asp-validation-for="Location" class="text-danger small mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mt-5">
+                            <button type="submit" class="btn btn-primary px-5 py-2 w-100 fw-bold fs-6 shadow-lg hover-lift">
+                                <i class="fa-solid fa-save me-2"></i> Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

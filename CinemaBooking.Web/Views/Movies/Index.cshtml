@@ -1,0 +1,82 @@
+@model IEnumerable<CinemaBooking.Application.DTOs.MovieDto>
+@{
+    ViewData["Title"] = "Browse Movies";
+}
+
+<div class="container py-5 mt-5">
+    <div class="row align-items-center mb-5" data-aos="fade-down">
+        <div class="col-md-6">
+            <h1 class="fw-bold text-white mb-0 display-5">Browse Movies</h1>
+            <p class="text-white-50 lead mb-0">Discover the latest blockbusters</p>
+        </div>
+        <div class="col-md-6 mt-4 mt-md-0">
+            <form method="get" asp-action="Index" class="d-flex gap-2">
+                <div class="position-relative flex-grow-1">
+                    <i class="fa-solid fa-search position-absolute text-muted" style="top: 50%; transform: translateY(-50%); left: 15px;"></i>
+                    <input type="text" name="searchTerm" class="form-control rounded-pill ps-5 bg-dark text-white border-secondary" placeholder="Search movies..." value="@ViewBag.SearchTerm">
+                </div>
+                <select name="categoryId" class="form-select rounded-pill bg-dark text-white border-secondary w-auto" onchange="this.form.submit()">
+                    <option value="">All Genres</option>
+                    @if(ViewBag.Categories != null)
+                    {
+                        foreach (var cat in ViewBag.Categories)
+                        {
+                            if (ViewBag.CategoryId != null && ViewBag.CategoryId.ToString() == cat.Id.ToString())
+                            {
+                                <option value="@cat.Id" selected>@cat.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@cat.Id">@cat.Name</option>
+                            }
+                        }
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold hover-lift">Search</button>
+            </form>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state bg-dark rounded-4 shadow-lg border border-secondary border-opacity-25" data-aos="fade-up">
+            <i class="fa-solid fa-film empty-state-icon text-muted opacity-50"></i>
+            <h3 class="text-white fw-bold">No Movies Found</h3>
+            <p class="text-white-50">Try adjusting your search filters or browse all genres.</p>
+            <a asp-action="Index" class="btn btn-outline-light rounded-pill px-4 mt-3">Clear Filters</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var movie in Model)
+            {
+                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" data-aos="fade-up">
+                    <a asp-action="Details" asp-route-id="@movie.Id" class="text-decoration-none">
+                        <div class="movie-poster-card shadow-lg">
+                            @if (!string.IsNullOrEmpty(movie.PosterUrl))
+                            {
+                                <img src="@movie.PosterUrl" alt="@movie.Title" />
+                            }
+                            else
+                            {
+                                <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-secondary">
+                                    <i class="fa-solid fa-film fa-3x text-white-50"></i>
+                                </div>
+                            }
+                            <div class="movie-poster-overlay">
+                                <h6 class="fw-bold text-white mb-1">@movie.Title</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small text-primary fw-bold">@movie.CategoryName</span>
+                                </div>
+                                <div class="text-white-50 small mt-1">
+                                    <i class="fa-regular fa-clock me-1 text-warning"></i> @movie.DurationMinutes m
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>

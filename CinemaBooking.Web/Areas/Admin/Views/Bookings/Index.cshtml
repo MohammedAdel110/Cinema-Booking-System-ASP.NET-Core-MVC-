@@ -1,0 +1,72 @@
+@model IEnumerable<CinemaBooking.Application.DTOs.BookingDto>
+@{
+    ViewData["Title"] = "All Bookings";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
+    <div>
+        <h2 class="fw-bold mb-0 text-dark">Bookings</h2>
+        <p class="text-muted mb-0">View all customer reservations</p>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0" data-aos="fade-up">
+    <div class="card-body p-0">
+        <div class="table-responsive p-4">
+            <table class="table dataTable table-hover align-middle w-100">
+                <thead>
+                    <tr>
+                        <th width="80">ID</th>
+                        <th>User</th>
+                        <th>Movie & Cinema</th>
+                        <th>Showtime</th>
+                        <th>Seats / Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model) {
+                        <tr>
+                            <td>
+                                <span class="badge bg-secondary">#@item.Id</span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">@item.UserName</div>
+                                        <small class="text-muted">@item.BookingDate.ToString("MMM dd, yyyy")</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark fs-6">@item.MovieTitle</div>
+                                <div class="text-muted small"><i class="fa-solid fa-location-dot text-danger opacity-75 me-1"></i>@item.CinemaName</div>
+                            </td>
+                            <td>
+                                <div class="text-dark fw-medium">
+                                    <i class="fa-regular fa-clock me-1 text-warning"></i> @item.ShowTimeStart.ToString("MMM dd - hh:mm tt")
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-dark fw-bold"><i class="fa-solid fa-chair text-info opacity-75 me-1"></i> @item.SeatCount Seats</span>
+                                    <span class="text-success fw-bold small mt-1">@item.TotalAmount.ToString("C")</span>
+                                </div>
+                            </td>
+                            <td>
+                                @if (item.IsCanceled) {
+                                    <span class="badge bg-danger-soft border border-danger"><i class="fa-solid fa-xmark me-1"></i> Canceled</span>
+                                } else {
+                                    <span class="badge bg-success-soft border border-success"><i class="fa-solid fa-check me-1"></i> Active</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

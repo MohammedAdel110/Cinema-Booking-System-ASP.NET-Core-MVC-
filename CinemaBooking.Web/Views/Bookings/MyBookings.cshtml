@@ -1,0 +1,125 @@
+@model IEnumerable<CinemaBooking.Application.DTOs.BookingDto>
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<div class="container py-5 mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-5 border-bottom border-secondary border-opacity-50 pb-3" data-aos="fade-down">
+        <div>
+            <h1 class="fw-bold text-white mb-0 display-5"><i class="fa-solid fa-ticket-simple text-primary me-3"></i>My Tickets</h1>
+            <p class="text-white-50 lead mb-0">View and manage your upcoming and past bookings</p>
+        </div>
+    </div>
+
+    @if (!Model.Any()) {
+        <div class="empty-state bg-dark rounded-4 shadow-lg border border-secondary border-opacity-25" data-aos="fade-up">
+            <i class="fa-solid fa-film empty-state-icon text-muted opacity-50"></i>
+            <h3 class="text-white fw-bold">No Bookings Found</h3>
+            <p class="text-white-50">It looks like you haven't booked any movies yet.</p>
+            <a asp-controller="Movies" asp-action="Index" class="btn btn-primary rounded-pill px-4 mt-3 hover-lift fw-bold">Browse Movies</a>
+        </div>
+    }
+    else {
+        <div class="row g-4">
+            @foreach (var item in Model.OrderByDescending(b => b.BookingDate)) {
+                var isPast = item.ShowTimeStart <= DateTime.UtcNow;
+                var badgeClass = item.IsCanceled ? "bg-danger" : (isPast ? "bg-secondary" : "bg-success");
+                var badgeText = item.IsCanceled ? "Canceled" : (isPast ? "Past" : "Active");
+                var ticketStyle = item.IsCanceled || isPast ? "opacity: 0.75; filter: grayscale(50%);" : "";
+
+                <div class="col-lg-6" data-aos="fade-up">
+                    <div class="card bg-transparent border-0 h-100" style="@ticketStyle">
+                        <div class="d-flex h-100 shadow-lg rounded-4 overflow-hidden position-relative ticket-card">
+                            
+                            <!-- Status Badge -->
+                            <div class="position-absolute top-0 end-0 m-3 z-index-10">
+                                <span class="badge @badgeClass rounded-pill px-3 py-2 fw-bold tracking-widest text-uppercase">@badgeText</span>
+                            </div>
+
+                            <!-- Left Side: Movie Info -->
+                            <div class="bg-dark border border-secondary border-opacity-25 p-4 flex-grow-1 border-end-0 rounded-start-4 position-relative z-index-1">
+                                <h4 class="fw-bold text-white mb-1 pe-5">@item.MovieTitle</h4>
+                                <div class="text-primary small fw-bold mb-4">@item.CinemaName</div>
+                                
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="text-white-50 small text-uppercase tracking-widest mb-1">Date</div>
+                                        <div class="text-white fw-medium">@item.ShowTimeStart.ToString("MMM dd, yyyy")</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-white-50 small text-uppercase tracking-widest mb-1">Time</div>
+                                        <div class="text-white fw-medium">@item.ShowTimeStart.ToString("hh:mm tt")</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-white-50 small text-uppercase tracking-widest mb-1">Seats</div>
+                                        <div class="text-white fw-medium"><i class="fa-solid fa-chair text-info opacity-75 me-1"></i> @item.SeatCount</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-white-50 small text-uppercase tracking-widest mb-1">Total</div>
+                                        <div class="text-success fw-bold">@item.TotalAmount.ToString("C")</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Perforation Line -->
+                            <div class="bg-dark d-flex flex-column justify-content-between align-items-center py-2 z-index-1" style="width: 20px; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                @for (int i = 0; i < 15; i++)
+                                {
+                                    <div class="bg-black rounded-circle" style="width: 10px; height: 10px; opacity: 0.5;"></div>
+                                }
+                            </div>
+
+                            <!-- Right Side: Actions -->
+                            <div class="bg-black bg-opacity-50 border border-secondary border-opacity-25 p-4 d-flex flex-column justify-content-center align-items-center border-start-0 rounded-end-4" style="min-width: 140px; z-index: 1;">
+                                <div class="text-center mb-3">
+                                    <i class="fa-solid fa-qrcode fa-3x text-white opacity-50"></i>
+                                    <div class="text-white-50 small mt-1">#@item.Id.ToString("D6")</div>
+                                </div>
+                                
+                                @if (!item.IsCanceled && !isPast) {
+                                    <form asp-action="Cancel" asp-route-id="@item.Id" method="post" class="w-100">
+                                        <button type="button" onclick="confirmCancel(this)" class="btn btn-outline-danger btn-sm w-100 rounded-pill hover-lift">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                } else {
+                                    <button class="btn btn-secondary btn-sm w-100 rounded-pill" disabled>
+                                        Closed
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <style>
+        .ticket-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .ticket-card:hover { transform: translateY(-5px); box-shadow: 0 1rem 3rem rgba(0,0,0,0.5) !important; }
+        .z-index-10 { z-index: 10; }
+        .z-index-1 { z-index: 1; }
+    </style>
+    <script>
+        function confirmCancel(btn) {
+            Swal.fire({
+                title: 'Cancel Booking?',
+                text: "Are you sure you want to cancel this ticket? This action cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, cancel it',
+                background: '#1e293b',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(btn).closest('form').submit();
+                }
+            })
+        }
+    </script>
+}

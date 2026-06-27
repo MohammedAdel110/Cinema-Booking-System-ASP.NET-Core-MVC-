@@ -1,0 +1,48 @@
+namespace CinemaBooking.Web.Controllers;
+
+using CinemaBooking.Application.Features.Movies.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using CinemaBooking.Application.Features.Movies;
+using CinemaBooking.Application.DTOs;
+using System.Collections.Generic;
+
+public class MoviesController : Controller
+{
+    private readonly IMediator _mediator;
+
+    public MoviesController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    public async Task<IActionResult> Index(int? categoryId, string? searchTerm)
+    {
+        ViewBag.SearchTerm = searchTerm;
+        ViewBag.CategoryId = categoryId;
+        
+        var categories = await _mediator.Send(new CinemaBooking.Application.Features.Categories.GetAllCategoriesQuery());
+        ViewBag.Categories = categories.IsSuccess ? categories.Value : new List<CinemaBooking.Application.DTOs.CategoryDto>();
+
+        var result = await _mediator.Send(new CinemaBooking.Application.Features.Movies.GetAllMoviesQuery(categoryId, searchTerm));
+        if (result.IsSuccess)
+        {
+            return View(result.Value);
+        }
+        
+        TempData["ErrorMessage"] = result.Error.Message;
+        return View(new List<CinemaBooking.Application.DTOs.MovieDto>());
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        var result = await _mediator.Send(new GetMovieDetailsQuery(id));
+        if (result.IsFailure)
+        {
+            TempData["ErrorMessage"] = result.Error.Message;
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(result.Value);
+    }
+}

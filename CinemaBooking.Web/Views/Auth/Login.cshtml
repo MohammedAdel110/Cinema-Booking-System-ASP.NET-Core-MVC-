@@ -1,0 +1,62 @@
+@model CinemaBooking.Application.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "_Layout";
+}
+
+<div class="position-relative min-vh-100 d-flex align-items-center justify-content-center" style="margin-top: -80px;">
+    <!-- Background image and overlay -->
+    <div class="position-absolute w-100 h-100 z-index-n1">
+        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop" class="w-100 h-100 object-fit-cover" style="filter: brightness(0.3);" alt="Cinema Background">
+        <div class="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-75"></div>
+    </div>
+
+    <div class="container py-5" data-aos="fade-up">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-5">
+                <div class="card bg-dark bg-opacity-75 border border-secondary border-opacity-25 shadow-lg rounded-4 overflow-hidden" style="backdrop-filter: blur(20px);">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-5">
+                            <h2 class="fw-bold text-white mb-2">Welcome Back</h2>
+                            <p class="text-white-50">Sign in to access your tickets and history.</p>
+                        </div>
+
+                        <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                            
+                            <div class="form-floating mb-4">
+                                <input asp-for="Email" class="form-control bg-black bg-opacity-50 border-secondary text-white" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                                <label asp-for="Email" class="text-white-50"><i class="fa-regular fa-envelope me-2"></i> Email Address</label>
+                                <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
+                            </div>
+                            
+                            <div class="form-floating mb-4">
+                                <input asp-for="Password" class="form-control bg-black bg-opacity-50 border-secondary text-white" autocomplete="current-password" aria-required="true" placeholder="password" />
+                                <label asp-for="Password" class="text-white-50"><i class="fa-solid fa-lock me-2"></i> Password</label>
+                                <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" asp-for="RememberMe" id="flexSwitchCheckDefault">
+                                    <label class="form-check-label text-white-50 ms-2" for="flexSwitchCheckDefault">Remember me</label>
+                                </div>
+                                <a href="#" class="text-primary text-decoration-none small fw-bold hover-lift">Forgot Password?</a>
+                            </div>
+
+                            <button id="login-submit" type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold hover-lift mb-4 shadow-lg">Sign In</button>
+                            
+                            <div class="text-center">
+                                <p class="text-white-50 small mb-0">Don't have an account? <a asp-action="Register" class="text-primary text-decoration-none fw-bold ms-1">Register Now</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

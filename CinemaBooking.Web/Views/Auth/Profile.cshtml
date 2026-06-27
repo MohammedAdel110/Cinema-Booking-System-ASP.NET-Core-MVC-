@@ -1,0 +1,48 @@
+@model CinemaBooking.Domain.Entities.ApplicationUser
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6" data-aos="fade-up">
+            <div class="card bg-dark bg-opacity-75 border border-secondary border-opacity-25 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-black bg-opacity-50 border-bottom border-secondary border-opacity-25 p-4 text-center">
+                    <div class="position-relative d-inline-block mb-3 mt-3">
+                        <img src="https://ui-avatars.com/api/?name=@Model.FirstName+@Model.LastName&background=2563EB&color=fff&size=120&rounded=true" class="rounded-circle shadow-lg border border-4 border-dark" alt="Avatar">
+                    </div>
+                    <h3 class="fw-bold text-white mb-1">@Model.FirstName @Model.LastName</h3>
+                    <span class="badge bg-primary rounded-pill px-3 py-1">Member</span>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    
+                    <h5 class="fw-bold text-white mb-4 border-bottom border-secondary border-opacity-25 pb-2">Account Details</h5>
+                    
+                    <div class="row g-4 mb-5">
+                        <div class="col-sm-6">
+                            <div class="text-white-50 small text-uppercase tracking-widest mb-1">First Name</div>
+                            <div class="text-white fw-medium fs-5">@Model.FirstName</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-white-50 small text-uppercase tracking-widest mb-1">Last Name</div>
+                            <div class="text-white fw-medium fs-5">@Model.LastName</div>
+                        </div>
+                        <div class="col-12">
+                            <div class="text-white-50 small text-uppercase tracking-widest mb-1">Email Address</div>
+                            <div class="text-white fw-medium fs-5">@Model.Email</div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <a asp-action="ChangePassword" class="btn btn-outline-light rounded-pill hover-lift py-2 fw-bold d-flex align-items-center justify-content-center gap-2">
+                            <i class="fa-solid fa-key"></i> Change Password
+                        </a>
+                        <a asp-controller="Bookings" asp-action="MyBookings" class="btn btn-primary rounded-pill hover-lift py-2 fw-bold d-flex align-items-center justify-content-center gap-2">
+                            <i class="fa-solid fa-ticket"></i> View My Tickets
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

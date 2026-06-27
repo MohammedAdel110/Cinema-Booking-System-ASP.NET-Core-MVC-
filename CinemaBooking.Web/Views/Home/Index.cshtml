@@ -1,0 +1,125 @@
+@model IEnumerable<CinemaBooking.Application.DTOs.MovieDto>
+@{
+    ViewData["Title"] = "Home Page";
+    var featuredMovie = Model.FirstOrDefault();
+}
+
+@if(featuredMovie != null)
+{
+    <section class="hero-banner mb-5" style="background-image: url('@featuredMovie.PosterUrl');">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content" data-aos="fade-up">
+            <div class="row">
+                <div class="col-lg-6">
+                    <span class="badge bg-primary mb-3 py-2 px-3 fw-bold tracking-widest text-uppercase">Now Showing</span>
+                    <h1 class="display-3 fw-bold mb-3 text-white" style="line-height: 1.1;">@featuredMovie.Title</h1>
+                    <div class="d-flex align-items-center gap-3 mb-4 text-white-50">
+                        <span class="fw-medium"><i class="fa-solid fa-clock text-warning me-1"></i> @featuredMovie.DurationMinutes mins</span>
+                        <span>•</span>
+                        <span class="badge bg-secondary-soft text-white border border-secondary px-3">@featuredMovie.CategoryName</span>
+                        <span>•</span>
+                        <span>@featuredMovie.ReleaseDate.Year</span>
+                    </div>
+                    <p class="lead text-white-50 mb-5" style="max-width: 500px;">
+                        @(featuredMovie.Description?.Length > 150 ? featuredMovie.Description.Substring(0, 150) + "..." : featuredMovie.Description)
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a asp-controller="Movies" asp-action="Details" asp-route-id="@featuredMovie.Id" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold hover-lift">
+                            <i class="fa-solid fa-ticket me-2"></i> Book Tickets
+                        </a>
+                        <button class="btn btn-outline-light btn-lg rounded-pill px-4 hover-lift d-flex align-items-center gap-2 border-2">
+                            <i class="fa-regular fa-circle-play"></i> Trailer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-end mb-4" data-aos="fade-up">
+        <div>
+            <h5 class="text-primary fw-bold text-uppercase tracking-widest mb-1" style="font-size: 0.85rem;">Trending</h5>
+            <h2 class="fw-bold mb-0 text-white">Popular Movies</h2>
+        </div>
+        <div class="d-none d-md-flex gap-2">
+            <button class="btn btn-action bg-dark text-white rounded-circle border border-secondary swiper-button-prev-custom"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn btn-action bg-dark text-white rounded-circle border border-secondary swiper-button-next-custom"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <div class="swiper mySwiper" data-aos="fade-up" data-aos-delay="100">
+        <div class="swiper-wrapper py-3">
+            @foreach(var movie in Model)
+            {
+                <div class="swiper-slide">
+                    <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id" class="text-decoration-none">
+                        <div class="movie-poster-card shadow-lg">
+                            @if(!string.IsNullOrEmpty(movie.PosterUrl))
+                            {
+                                <img src="@movie.PosterUrl" alt="@movie.Title" />
+                            }
+                            else
+                            {
+                                <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-secondary">
+                                    <i class="fa-solid fa-film fa-3x text-white-50"></i>
+                                </div>
+                            }
+                            <div class="movie-poster-overlay">
+                                <h5 class="fw-bold text-white mb-1">@movie.Title</h5>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small text-primary fw-bold">@movie.CategoryName</span>
+                                    <div class="text-warning small">
+                                        <i class="fa-solid fa-star"></i> 4.5
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary btn-sm w-100 mt-3 rounded-pill fw-bold">Book Now</button>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="container py-5 mt-5 border-top border-secondary border-opacity-25" data-aos="fade-up">
+    <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <h2 class="fw-bold text-white display-5 mb-4">Premium Cinema Experience</h2>
+            <p class="text-white-50 lead mb-4">Enjoy the latest blockbusters with our state-of-the-art Dolby Atmos sound systems, ultra-comfortable reclining seats, and gourmet food delivery right to your seat.</p>
+            <ul class="list-unstyled text-white-50">
+                <li class="mb-3 d-flex align-items-center gap-3"><i class="fa-solid fa-check text-primary fs-5"></i> 4K IMAX Laser Projection</li>
+                <li class="mb-3 d-flex align-items-center gap-3"><i class="fa-solid fa-check text-primary fs-5"></i> Immersive Dolby Atmos Audio</li>
+                <li class="mb-3 d-flex align-items-center gap-3"><i class="fa-solid fa-check text-primary fs-5"></i> VIP Recliner Seating</li>
+            </ul>
+        </div>
+        <div class="col-lg-5 offset-lg-1">
+            <div class="position-relative rounded-4 overflow-hidden shadow-lg" style="height: 400px;">
+                <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=2070&auto=format&fit=crop" class="w-100 h-100 object-fit-cover" alt="Cinema Inside">
+                <div class="position-absolute top-50 start-50 translate-middle">
+                    <button class="btn btn-primary rounded-circle" style="width: 80px; height: 80px;"><i class="fa-solid fa-play fa-2x ms-1"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 2,
+            spaceBetween: 20,
+            navigation: {
+                nextEl: '.swiper-button-next-custom',
+                prevEl: '.swiper-button-prev-custom',
+            },
+            breakpoints: {
+                640: { slidesPerView: 3, spaceBetween: 20 },
+                768: { slidesPerView: 4, spaceBetween: 30 },
+                1024: { slidesPerView: 5, spaceBetween: 30 },
+            }
+        });
+    </script>
+}

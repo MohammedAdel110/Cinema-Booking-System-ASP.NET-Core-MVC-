@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cinema Booking</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Swiper JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <!-- Pace.js -->
+    <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+    
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body { padding-top: 0; background-color: #0f172a; color: #f8fafc; }
+        .glass-navbar { transition: all 0.4s ease; padding: 1rem 0; }
+        .glass-navbar.scrolled { padding: 0.5rem 0; background: rgba(15, 23, 42, 0.95) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .footer-premium { background-color: #020617; border-top: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top glass-navbar" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fa-solid fa-play text-primary"></i> <span class="text-white">CinemaPro</span>
+                </a>
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link fw-medium px-3 rounded text-white" asp-area="" asp-controller="Movies" asp-action="Index">Movies</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-medium px-3 rounded text-white" asp-area="" asp-controller="Cinemas" asp-action="Index">Cinemas</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav gap-2 align-items-lg-center">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item me-2">
+                                    <a class="btn btn-outline-warning btn-sm rounded-pill px-3 fw-bold" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                        <i class="fa-solid fa-shield-halved me-1"></i> Admin
+                                    </a>
+                                </li>
+                            }
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="https://ui-avatars.com/api/?name=@User.Identity.Name&background=2563EB&color=fff&rounded=true" width="32" height="32" alt="Avatar">
+                                    <span class="fw-medium">@User.Identity.Name</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 bg-dark text-white mt-2" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item text-white hover-primary" asp-area="" asp-controller="Bookings" asp-action="MyBookings"><i class="fa-solid fa-ticket fa-fw me-2"></i> My Bookings</a></li>
+                                    <li><hr class="dropdown-divider border-secondary"></li>
+                                    <li>
+                                        <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item text-danger"><i class="fa-solid fa-sign-out-alt fa-fw me-2"></i> Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link fw-medium text-white" asp-area="" asp-controller="Auth" asp-action="Login">Sign In</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-primary rounded-pill px-4 fw-bold" asp-area="" asp-controller="Auth" asp-action="Register">Join Now</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="fade-enter-active">
+        @RenderBody()
+    </main>
+
+    <footer class="footer-premium py-5 mt-5">
+        <div class="container text-center text-md-start">
+            <div class="row align-items-center">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <a class="text-decoration-none fw-bold fs-4 text-white d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-3" href="/">
+                        <i class="fa-solid fa-play text-primary"></i> CinemaPro
+                    </a>
+                    <p class="text-muted small mb-0">Experience the magic of movies with premium seating and world-class service. Your entertainment is our priority.</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0 text-center">
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="#" class="btn btn-action bg-dark text-white border-0"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="btn btn-action bg-dark text-white border-0"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="btn btn-action bg-dark text-white border-0"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center text-md-end text-muted small">
+                    &copy; 2026 CinemaPro Inc. All rights reserved.<br>
+                    Designed with <i class="fa-solid fa-heart text-danger"></i> for movie lovers.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        // AOS
+        AOS.init({ duration: 800, once: true });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', function() {
+            var navbar = document.getElementById('mainNav');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Toastr
+        toastr.options = { "positionClass": "toast-top-right", "timeOut": "3000" };
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>toastr.success('@TempData["SuccessMessage"]');</text>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>toastr.error('@TempData["ErrorMessage"]');</text>
+        }
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

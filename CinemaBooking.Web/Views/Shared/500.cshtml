@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Server Error";
+}
+
+<div class="position-relative min-vh-100 d-flex align-items-center justify-content-center" style="margin-top: -80px;">
+    <!-- Background image and overlay -->
+    <div class="position-absolute w-100 h-100 z-index-n1">
+        <div class="w-100 h-100" style="background: radial-gradient(circle at center, #450a0a 0%, #0f172a 100%);"></div>
+        <div class="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-50"></div>
+    </div>
+
+    <div class="container text-center" data-aos="fade-up">
+        <div class="mb-5">
+            <i class="fa-solid fa-triangle-exclamation text-danger display-1 mb-3" style="filter: drop-shadow(0 0 20px rgba(220,53,69,0.5));"></i>
+            <h1 class="display-1 fw-bold text-white mb-0" style="text-shadow: 0 10px 30px rgba(0,0,0,0.5);">500</h1>
+        </div>
+        <h2 class="fw-bold text-white mb-3">Technical Difficulties</h2>
+        <p class="lead text-white-50 mb-5 max-w-md mx-auto" style="max-width: 500px;">
+            @ViewBag.ErrorMessage
+            Our projector seems to be jammed. We've notified our engineering crew. Please check back shortly.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <button onclick="location.reload()" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-bold hover-lift">
+                <i class="fa-solid fa-rotate-right me-2"></i> Retry
+            </button>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold hover-lift shadow-lg">
+                <i class="fa-solid fa-house me-2"></i> Return Home
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,255 @@
+@model CinemaBooking.Application.Features.Bookings.Commands.CreateBookingCommand
+@{
+    ViewData["Title"] = "Book Tickets";
+    var details = ViewBag.ShowTimeDetails as CinemaBooking.Application.Features.Bookings.Queries.ShowTimeBookingDetailsDto;
+}
+
+<div class="position-relative" style="margin-top: 56px;">
+    <!-- Backdrop (Static dark gradient since we don't have the movie poster here easily without modifying DTO, but we can do a nice premium gradient) -->
+    <div class="position-absolute w-100" style="height: 40vh; z-index: -1;">
+        <div class="w-100 h-100 bg-black" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);"></div>
+        <div class="position-absolute bottom-0 w-100" style="height: 100%; background: linear-gradient(to top, #0f172a 0%, transparent 100%);"></div>
+    </div>
+
+    <div class="container py-5">
+        <div class="row pt-5 justify-content-center">
+            <div class="col-lg-10">
+                
+                <!-- Progress Bar -->
+                <div class="mb-5 px-md-5" data-aos="fade-down">
+                    <div class="position-relative m-4">
+                        <div class="progress" style="height: 4px; background-color: rgba(255,255,255,0.1);">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <button class="position-absolute top-0 start-0 translate-middle btn btn-sm btn-primary rounded-pill" style="width: 2rem; height:2rem;">1</button>
+                        <button class="position-absolute top-0 start-50 translate-middle btn btn-sm btn-primary rounded-pill" style="width: 2rem; height:2rem;">2</button>
+                        <button class="position-absolute top-0 start-100 translate-middle btn btn-sm btn-secondary rounded-pill" style="width: 2rem; height:2rem;">3</button>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3 px-2 text-white-50 small fw-bold text-uppercase tracking-widest">
+                        <span>Select Movie</span>
+                        <span class="text-white">Choose Seats</span>
+                        <span>Payment</span>
+                    </div>
+                </div>
+
+                @if (details == null) {
+                    <div class="alert bg-danger-soft border border-danger text-danger rounded-4 p-4 d-flex align-items-center gap-3">
+                        <i class="fa-solid fa-circle-exclamation fa-2x"></i>
+                        <div>
+                            <h5 class="fw-bold mb-1">Error Loading Showtime</h5>
+                            <p class="mb-0">Showtime details could not be loaded. Please try again.</p>
+                        </div>
+                    </div>
+                } else if (details.StartTime <= DateTime.UtcNow) {
+                    <div class="alert bg-warning-soft border border-warning text-warning rounded-4 p-4 d-flex align-items-center gap-3">
+                        <i class="fa-solid fa-clock-rotate-left fa-2x"></i>
+                        <div>
+                            <h5 class="fw-bold mb-1">Showtime Passed</h5>
+                            <p class="mb-0">This showtime has already started or passed.</p>
+                        </div>
+                        <a asp-controller="Movies" asp-action="Index" class="btn btn-warning ms-auto fw-bold text-dark">Back to Movies</a>
+                    </div>
+                } else if (details.AvailableSeats <= 0) {
+                    <div class="alert bg-danger-soft border border-danger text-danger rounded-4 p-4 d-flex align-items-center gap-3">
+                        <i class="fa-solid fa-ban fa-2x"></i>
+                        <div>
+                            <h5 class="fw-bold mb-1">Sold Out</h5>
+                            <p class="mb-0">This showtime is completely sold out.</p>
+                        </div>
+                        <a asp-controller="Movies" asp-action="Index" class="btn btn-danger ms-auto fw-bold">Back to Movies</a>
+                    </div>
+                } else {
+                    <div class="row g-4">
+                        <!-- Left Column: Seat Selection -->
+                        <div class="col-md-7" data-aos="fade-right">
+                            <div class="card bg-dark border-secondary border-opacity-25 shadow-lg rounded-4 h-100">
+                                <div class="card-header bg-transparent border-bottom border-secondary border-opacity-25 p-4">
+                                    <h4 class="fw-bold text-white mb-0"><i class="fa-solid fa-chair text-primary me-2"></i> Select Tickets</h4>
+                                </div>
+                                <div class="card-body p-4 p-md-5 d-flex flex-column justify-content-center align-items-center">
+                                    
+                                    <div class="text-center mb-5 w-100">
+                                        <div class="screen-curve bg-primary bg-opacity-25 border-top border-primary border-opacity-50 mx-auto rounded-top-circle mb-5" style="height: 30px; width: 80%; box-shadow: 0 -15px 30px rgba(37,99,235,0.2);">
+                                            <span class="small text-white-50 text-uppercase tracking-widest mt-3 d-block">Screen</span>
+                                        </div>
+                                    </div>
+
+                                    <form asp-action="Book" method="post" id="bookingForm" class="w-100">
+                                        <input type="hidden" asp-for="ShowTimeId" />
+                                        
+                                        <div class="d-flex justify-content-center align-items-center gap-4 mb-5">
+                                            <button type="button" class="btn btn-outline-secondary rounded-circle seat-btn border-2 d-flex align-items-center justify-content-center" id="btnMinus" style="width: 60px; height: 60px;">
+                                                <i class="fa-solid fa-minus fs-4"></i>
+                                            </button>
+                                            
+                                            <div class="text-center">
+                                                <input asp-for="NumberOfSeats" class="form-control bg-transparent border-0 text-white text-center fw-bold display-3 p-0 shadow-none" type="number" min="1" max="@Math.Min(10, details.AvailableSeats)" id="numSeats" style="width: 100px; height: 80px;" readonly />
+                                                <div class="text-white-50 small text-uppercase tracking-widest">Tickets</div>
+                                            </div>
+
+                                            <button type="button" class="btn btn-outline-primary rounded-circle seat-btn border-2 d-flex align-items-center justify-content-center" id="btnPlus" style="width: 60px; height: 60px;">
+                                                <i class="fa-solid fa-plus fs-4"></i>
+                                            </button>
+                                        </div>
+                                        <span asp-validation-for="NumberOfSeats" class="text-danger d-block text-center mb-3"></span>
+
+                                        <div class="text-center text-white-50 small bg-black bg-opacity-25 rounded-pill py-2 px-3 d-inline-block mx-auto d-flex justify-content-center gap-3">
+                                            <span><i class="fa-solid fa-circle text-primary fs-xs me-1"></i> Available: @details.AvailableSeats</span>
+                                            <span><i class="fa-solid fa-circle text-warning fs-xs me-1"></i> Max limit: 10</span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Order Summary -->
+                        <div class="col-md-5" data-aos="fade-left">
+                            <div class="card bg-black bg-opacity-50 border-secondary border-opacity-25 shadow-lg rounded-4 h-100 position-relative overflow-hidden">
+                                <!-- Decorative blob -->
+                                <div class="position-absolute bg-primary rounded-circle blur-blob" style="width: 200px; height: 200px; filter: blur(80px); top: -100px; right: -100px; opacity: 0.3; z-index: 0;"></div>
+                                
+                                <div class="card-body p-4 p-md-5 position-relative" style="z-index: 1;">
+                                    <h4 class="fw-bold text-white mb-4">Booking Summary</h4>
+                                    
+                                    <div class="d-flex gap-3 mb-4 pb-4 border-bottom border-secondary border-opacity-25">
+                                        <div class="bg-secondary bg-opacity-50 rounded p-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 80px;">
+                                            <i class="fa-solid fa-film fa-2x text-white-50"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold text-white mb-1">@details.MovieTitle</h5>
+                                            <div class="text-primary small fw-bold">@details.CinemaName</div>
+                                        </div>
+                                    </div>
+
+                                    <ul class="list-unstyled text-white-50 mb-4 pb-4 border-bottom border-secondary border-opacity-25 space-y-3">
+                                        <li class="d-flex justify-content-between">
+                                            <span><i class="fa-regular fa-calendar me-2 text-muted"></i> Date</span>
+                                            <span class="text-white fw-medium">@details.StartTime.ToString("MMM dd, yyyy")</span>
+                                        </li>
+                                        <li class="d-flex justify-content-between mt-3">
+                                            <span><i class="fa-regular fa-clock me-2 text-muted"></i> Time</span>
+                                            <span class="text-white fw-medium">@details.StartTime.ToString("hh:mm tt")</span>
+                                        </li>
+                                        <li class="d-flex justify-content-between mt-3">
+                                            <span><i class="fa-solid fa-door-open me-2 text-muted"></i> Hall</span>
+                                            <span class="text-white fw-medium">@details.HallName</span>
+                                        </li>
+                                    </ul>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-white-50">Ticket Price</span>
+                                        <span class="text-white">$<span id="ticketPrice">@details.TicketPrice.ToString("F2")</span></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-4 pb-4 border-bottom border-secondary border-opacity-25">
+                                        <span class="text-white-50">Quantity</span>
+                                        <span class="text-white fw-bold">x <span id="summaryQuantity">1</span></span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-5">
+                                        <span class="fs-5 text-white">Total Amount</span>
+                                        <span class="display-5 fw-bold text-success">$<span id="totalPrice">0.00</span></span>
+                                    </div>
+
+                                    <button type="button" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold hover-lift shadow-lg py-3" id="submitBtnWrapper">
+                                        Proceed to Checkout <i class="fa-solid fa-arrow-right ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <style>
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .seat-btn:hover {
+            background-color: var(--bs-primary);
+            color: white !important;
+            border-color: var(--bs-primary) !important;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            var pricePerTicket = parseFloat($('#ticketPrice').text());
+            var numSeatsInput = $('#numSeats');
+            var summaryQuantity = $('#summaryQuantity');
+            var totalPriceSpan = $('#totalPrice');
+            var submitBtnWrapper = $('#submitBtnWrapper');
+            var maxSeats = parseInt(numSeatsInput.attr('max'));
+            
+            // Set initial value to 1 if empty
+            if(!numSeatsInput.val() || parseInt(numSeatsInput.val()) < 1) {
+                numSeatsInput.val(1);
+            }
+
+            function calculateTotal() {
+                var seats = parseInt(numSeatsInput.val());
+                
+                if (isNaN(seats) || seats <= 0) {
+                    seats = 1;
+                    numSeatsInput.val(1);
+                }
+                
+                if (seats > maxSeats) {
+                    seats = maxSeats;
+                    numSeatsInput.val(maxSeats);
+                    toastr.warning('Maximum ' + maxSeats + ' tickets allowed.');
+                }
+
+                summaryQuantity.text(seats);
+                var total = seats * pricePerTicket;
+                
+                // Animate number change
+                $({ Counter: parseFloat(totalPriceSpan.text()) }).animate({
+                    Counter: total
+                }, {
+                    duration: 400,
+                    easing: 'swing',
+                    step: function (now) {
+                        totalPriceSpan.text(now.toFixed(2));
+                    }
+                });
+            }
+
+            $('#btnMinus').click(function() {
+                var current = parseInt(numSeatsInput.val());
+                if(current > 1) {
+                    numSeatsInput.val(current - 1);
+                    calculateTotal();
+                }
+            });
+
+            $('#btnPlus').click(function() {
+                var current = parseInt(numSeatsInput.val());
+                if(current < maxSeats) {
+                    numSeatsInput.val(current + 1);
+                    calculateTotal();
+                } else {
+                    toastr.warning('Maximum ' + maxSeats + ' tickets allowed.');
+                }
+            });
+
+            // Trigger submit on the wrapper button
+            submitBtnWrapper.click(function() {
+                // Add loading state
+                $(this).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processing...').addClass('disabled');
+                $('#bookingForm').submit();
+            });
+
+            calculateTotal(); // Initial calculation
+        });
+    </script>
+}

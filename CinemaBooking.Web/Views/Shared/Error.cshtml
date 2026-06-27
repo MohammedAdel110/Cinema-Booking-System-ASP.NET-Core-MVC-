@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="position-relative min-vh-100 d-flex align-items-center justify-content-center" style="margin-top: -80px;">
+    <!-- Background image and overlay -->
+    <div class="position-absolute w-100 h-100 z-index-n1">
+        <div class="w-100 h-100" style="background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);"></div>
+        <div class="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-50"></div>
+    </div>
+
+    <div class="container text-center" data-aos="fade-in">
+        <div class="mb-5">
+            <i class="fa-solid fa-circle-exclamation text-primary display-1 mb-3"></i>
+        </div>
+        <h2 class="fw-bold text-white mb-3">Something Went Wrong</h2>
+        <p class="lead text-white-50 mb-5 max-w-md mx-auto" style="max-width: 500px;">
+            @ViewBag.ErrorMessage
+            We've encountered an unexpected issue. Please try again later.
+        </p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold hover-lift shadow-lg">
+            <i class="fa-solid fa-house me-2"></i> Return Home
+        </a>
+    </div>
+</div>
