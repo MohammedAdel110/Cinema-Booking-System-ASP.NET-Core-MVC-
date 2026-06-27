@@ -20,8 +20,8 @@ public record DeleteMovieCommand(int Id) : IRequest<Result>;
 public record GetMovieByIdQuery(int Id) : IRequest<Result<MovieDto>>;
 public record GetAllMoviesQuery(int? CategoryId = null, string? SearchTerm = null) : IRequest<Result<List<MovieDto>>>;
 
-public record MovieDetailsDto(int Id, string Title, string Description, int DurationMinutes, DateTime ReleaseDate, string CategoryName, string? PosterUrl, Dictionary<string, List<ShowTimeDto>> ShowTimesByCinema);
-public record GetMovieDetailsQuery(int Id) : IRequest<Result<MovieDetailsDto>>;
+public record MovieDetailsDto(int Id, string Title, string Description, int DurationMinutes, DateTime ReleaseDate, string CategoryName, string? PosterUrl, Dictionary<string, List<ShowTimeDto>> ShowTimesByCinema, bool IsFavorite);
+public record GetMovieDetailsQuery(int Id, string? UserId = null) : IRequest<Result<MovieDetailsDto>>;
 
 public class MovieCommandsHandler :
     IRequestHandler<CreateMovieCommand, Result<int>>,
@@ -119,12 +119,14 @@ public class MovieQueriesHandler :
     private readonly IRepository<Movie> _repository;
     private readonly IShowTimeRepository _showTimeRepo;
     private readonly IMapper _mapper;
+    private readonly IMediator _mediator;
 
-    public MovieQueriesHandler(IRepository<Movie> repository, IShowTimeRepository showTimeRepo, IMapper mapper)
+    public MovieQueriesHandler(IRepository<Movie> repository, IShowTimeRepository showTimeRepo, IMapper mapper, IMediator mediator)
     {
         _repository = repository;
         _showTimeRepo = showTimeRepo;
         _mapper = mapper;
+        _mediator = mediator;
     }
 
     public async Task<Result<List<MovieDto>>> Handle(GetAllMoviesQuery request, CancellationToken cancellationToken)
@@ -162,6 +164,13 @@ public class MovieQueriesHandler :
         var dtos = _mapper.Map<List<ShowTimeDto>>(movieShowtimes);
         var grouped = dtos.GroupBy(s => s.HallName ?? "Unknown Cinema").ToDictionary(g => g.Key, g => g.ToList());
 
+        bool isFavorite = false;
+        if (!string.IsNullOrEmpty(request.UserId))
+        {
+            var favoriteResult = await _mediator.Send(new CinemaBooking.Application.Features.Favorites.CheckIsFavoriteQuery(request.Id, request.UserId));
+            if (favoriteResult.IsSuccess) isFavorite = favoriteResult.Value;
+        }
+
         var dto = new MovieDetailsDto(
             movie.Id,
             movie.Title,
@@ -169,8 +178,9 @@ public class MovieQueriesHandler :
             movie.DurationMinutes,
             movie.ReleaseDate,
             movie.Category?.Name ?? "",
-            movie.Poster != null ? $"/uploads/posters/{movie.Poster.FileName}" : null,
-            grouped
+            movie.Poster != null ? $"/posters/{movie.Poster.FileName}" : null,
+            grouped,
+            isFavorite
         );
 
         return Result.Success(dto);

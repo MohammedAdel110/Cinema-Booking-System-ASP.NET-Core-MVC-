@@ -17,10 +17,24 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Booking> Bookings => Set<Booking>();
     public DbSet<BookingItem> BookingItems => Set<BookingItem>();
     public DbSet<Poster> Posters => Set<Poster>();
+    public DbSet<FavoriteMovie> FavoriteMovies => Set<FavoriteMovie>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        builder.Entity<FavoriteMovie>()
+            .HasKey(fm => new { fm.UserId, fm.MovieId });
+
+        builder.Entity<FavoriteMovie>()
+            .HasOne(fm => fm.User)
+            .WithMany(u => u.FavoriteMovies)
+            .HasForeignKey(fm => fm.UserId);
+
+        builder.Entity<FavoriteMovie>()
+            .HasOne(fm => fm.Movie)
+            .WithMany(m => m.FavoriteMovies)
+            .HasForeignKey(fm => fm.MovieId);
     }
 }

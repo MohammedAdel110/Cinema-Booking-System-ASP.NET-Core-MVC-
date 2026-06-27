@@ -21,7 +21,7 @@
     
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
-        body { padding-top: 0; background-color: #0f172a; color: #f8fafc; }
+        body { padding-top: 100px; background-color: #0f172a; color: #f8fafc; }
         .glass-navbar { transition: all 0.4s ease; padding: 1rem 0; }
         .glass-navbar.scrolled { padding: 0.5rem 0; background: rgba(15, 23, 42, 0.95) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); }
         .footer-premium { background-color: #020617; border-top: 1px solid rgba(255,255,255,0.05); }
@@ -31,8 +31,8 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top glass-navbar" id="mainNav">
             <div class="container">
-                <a class="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fa-solid fa-play text-primary"></i> <span class="text-white">CinemaPro</span>
+                <a class="navbar-brand text-white fw-bold d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="/images/logo_cropped.png" alt="CinemaBooking Logo" style="height: 50px; object-fit: contain; margin: -5px 0;" />
                 </a>
                 <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -94,23 +94,24 @@
 
     <footer class="footer-premium py-5 mt-5">
         <div class="container text-center text-md-start">
-            <div class="row align-items-center">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <a class="text-decoration-none fw-bold fs-4 text-white d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-3" href="/">
-                        <i class="fa-solid fa-play text-primary"></i> CinemaPro
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <a class="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2 mb-3 text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="/images/logo_cropped.png" alt="CinemaBooking Logo" style="height: 70px; object-fit: contain; margin: -10px 0;" />
                     </a>
-                    <p class="text-muted small mb-0">Experience the magic of movies with premium seating and world-class service. Your entertainment is our priority.</p>
+                    <p class="text-white-50 small mb-0" style="max-width: 300px;">
+                        Experience the magic of movies with premium seating and world-class service. Your entertainment is our priority.
+                    </p>
                 </div>
                 <div class="col-md-4 mb-4 mb-md-0 text-center">
                     <div class="d-flex justify-content-center gap-3">
-                        <a href="#" class="btn btn-action bg-dark text-white border-0"><i class="fa-brands fa-twitter"></i></a>
-                        <a href="#" class="btn btn-action bg-dark text-white border-0"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" class="btn btn-action bg-dark text-white border-0"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://x.com/Mohamed_Adel974" target="_blank" rel="noopener noreferrer" class="btn btn-action bg-dark text-white rounded-circle border border-secondary"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://www.facebook.com/mohamedadelelklmaye.elklmaye/" target="_blank" rel="noopener noreferrer" class="btn btn-action bg-dark text-white rounded-circle border border-secondary"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/elkallmawy/" target="_blank" rel="noopener noreferrer" class="btn btn-action bg-dark text-white rounded-circle border border-secondary"><i class="fa-brands fa-instagram"></i></a>
                     </div>
                 </div>
-                <div class="col-md-4 text-center text-md-end text-muted small">
-                    &copy; 2026 CinemaPro Inc. All rights reserved.<br>
-                    Designed with <i class="fa-solid fa-heart text-danger"></i> for movie lovers.
+                <div class="col-md-4 text-center text-md-end text-white-50 small">
+                    <p class="text-white-50 small mb-0">&copy; @DateTime.Now.Year CinemaBooking Inc. All rights reserved.<br>Designed with <i class="fa-solid fa-heart text-danger mx-1"></i> for movie lovers.</p>
                 </div>
             </div>
         </div>

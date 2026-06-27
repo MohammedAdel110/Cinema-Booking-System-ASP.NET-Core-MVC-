@@ -8,4 +8,5 @@ public class ApplicationUser : IdentityUser
     public string LastName { get; set; } = string.Empty;
 
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    public ICollection<FavoriteMovie> FavoriteMovies { get; set; } = new List<FavoriteMovie>();
 }

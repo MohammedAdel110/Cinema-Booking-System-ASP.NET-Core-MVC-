@@ -15,4 +15,5 @@ public class Movie
     public Poster? Poster { get; set; }
 
     public ICollection<ShowTime> ShowTimes { get; set; } = new List<ShowTime>();
+    public ICollection<FavoriteMovie> FavoriteMovies { get; set; } = new List<FavoriteMovie>();
 }

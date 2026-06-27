@@ -24,7 +24,7 @@
                 <div class="rounded-4 overflow-hidden shadow-lg border border-secondary border-opacity-25" style="aspect-ratio: 2/3;">
                     @if (!string.IsNullOrEmpty(Model.PosterUrl))
                     {
-                        <img src="@Model.PosterUrl" class="w-100 h-100 object-fit-cover" alt="@Model.Title">
+                        <img src="@Model.PosterUrl" class="w-100 h-100 object-fit-cover" alt="@Model.Title" onerror="this.outerHTML='<div class=\'w-100 h-100 bg-secondary d-flex align-items-center justify-content-center\'><i class=\'fa-solid fa-film fa-4x text-white-50\'></i></div>'">
                     }
                     else
                     {
@@ -53,8 +53,8 @@
                     <button class="btn btn-outline-light rounded-pill px-4 hover-lift d-flex align-items-center gap-2 border-2">
                         <i class="fa-regular fa-circle-play"></i> Watch Trailer
                     </button>
-                    <button class="btn btn-outline-danger rounded-circle border-2" style="width: 48px; height: 48px;" data-bs-toggle="tooltip" title="Add to Favorites">
-                        <i class="fa-regular fa-heart"></i>
+                    <button id="favoriteBtn" class="btn @(Model.IsFavorite ? "btn-danger" : "btn-outline-danger") rounded-circle border-2" style="width: 48px; height: 48px;" data-bs-toggle="tooltip" title="@(Model.IsFavorite ? "Remove from Favorites" : "Add to Favorites")" data-movie-id="@Model.Id">
+                        <i class="@(Model.IsFavorite ? "fa-solid" : "fa-regular") fa-heart"></i>
                     </button>
                 </div>
             </div>
@@ -118,7 +118,49 @@
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
+            });
+
+            $('#favoriteBtn').click(function(e) {
+                e.preventDefault();
+                var btn = $(this);
+                var movieId = btn.data('movie-id');
+                
+                $.ajax({
+                    url: '/Movies/ToggleFavorite',
+                    type: 'POST',
+                    data: { id: movieId },
+                    success: function(response) {
+                        if (response.success) {
+                            var icon = btn.find('i');
+                            
+                            // Update Tooltip title
+                            var tooltip = bootstrap.Tooltip.getInstance(btn[0]);
+                            if(tooltip) tooltip.dispose();
+
+                            if (response.isFavorite) {
+                                btn.removeClass('btn-outline-danger').addClass('btn-danger');
+                                icon.removeClass('fa-regular').addClass('fa-solid');
+                                btn.attr('title', 'Remove from Favorites');
+                            } else {
+                                btn.removeClass('btn-danger').addClass('btn-outline-danger');
+                                icon.removeClass('fa-solid').addClass('fa-regular');
+                                btn.attr('title', 'Add to Favorites');
+                            }
+                            
+                            new bootstrap.Tooltip(btn[0]);
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 401) {
+                            window.location.href = '/Identity/Account/Login?ReturnUrl=' + encodeURIComponent(window.location.pathname);
+                        } else {
+                            alert('An error occurred. Please try again.');
+                        }
+                    }
+                });
+            });
         });
     </script>
 }

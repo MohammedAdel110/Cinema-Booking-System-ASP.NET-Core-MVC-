@@ -1,27 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --primary: #2563EB;
-    --primary-light: #3b82f6;
+    --primary: #3b82f6;
+    --primary-light: #60a5fa;
     --secondary: #6366F1;
     --success: #10B981;
     --danger: #EF4444;
     --warning: #F59E0B;
     --info: #0ea5e9;
-    --background: #F8FAFC;
-    --surface: #ffffff;
-    --sidebar-bg: #111827;
-    --text-main: #1F2937;
-    --text-muted: #6B7280;
-    --border: #e5e7eb;
+    --background: #0f172a;
+    --surface: #1e293b;
+    --sidebar-bg: #020617;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #334155;
     --border-radius-sm: 8px;
     --border-radius-md: 12px;
     --border-radius-lg: 18px;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --shadow-hover: 0 20px 25px -5px rgba(37, 99, 235, 0.15), 0 10px 10px -5px rgba(37, 99, 235, 0.04);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 20px 25px -5px rgba(59, 130, 246, 0.15), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -140,13 +140,16 @@ a:hover { color: var(--primary-light); text-decoration: none; }
     padding: 0.75rem 1rem;
     font-size: 0.95rem;
     transition: var(--transition);
-    background-color: #f9fafb;
+    background-color: var(--surface);
+    color: var(--text-main);
 }
 .form-control:focus, .form-select:focus {
-    background-color: white;
+    background-color: var(--background);
+    color: var(--text-main);
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
 }
+.form-control::placeholder { color: var(--text-muted); }
 .form-floating > label { color: var(--text-muted); }
 
 /* Admin Sidebar */
@@ -192,12 +195,12 @@ a:hover { color: var(--primary-light); text-decoration: none; }
 /* Tables */
 .table { margin-bottom: 0; }
 .table th {
-    background-color: #f8fafc; color: var(--text-muted); font-weight: 600; text-transform: uppercase;
+    background-color: var(--surface); color: var(--text-muted); font-weight: 600; text-transform: uppercase;
     font-size: 0.75rem; letter-spacing: 0.05em; padding: 1rem; border-bottom: 2px solid var(--border);
 }
 .table td { padding: 1rem; vertical-align: middle; border-bottom: 1px solid var(--border); color: var(--text-main); font-size: 0.95rem; }
 .table tbody tr { transition: var(--transition); }
-.table tbody tr:hover { background-color: #f1f5f9; }
+.table tbody tr:hover { background-color: rgba(255,255,255,0.05); }
 .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--primary) !important; color: white !important; border: none !important; border-radius: var(--border-radius-sm); }
 .dataTables_wrapper .dataTables_filter input { border-radius: var(--border-radius-sm); border: 1px solid var(--border); padding: 0.4rem 0.8rem; margin-left: 0.5rem; }
 

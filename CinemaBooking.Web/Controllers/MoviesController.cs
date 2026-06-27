@@ -36,7 +36,8 @@ public class MoviesController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        var result = await _mediator.Send(new GetMovieDetailsQuery(id));
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var result = await _mediator.Send(new GetMovieDetailsQuery(id, userId));
         if (result.IsFailure)
         {
             TempData["ErrorMessage"] = result.Error.Message;
@@ -44,5 +45,22 @@ public class MoviesController : Controller
         }
 
         return View(result.Value);
+    }
+
+    [HttpPost]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public async Task<IActionResult> ToggleFavorite(int id)
+    {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var result = await _mediator.Send(new CinemaBooking.Application.Features.Favorites.ToggleFavoriteCommand(id, userId));
+        
+        if (result.IsSuccess)
+        {
+            return Json(new { success = true, isFavorite = result.Value });
+        }
+
+        return Json(new { success = false, message = result.Error.Message });
     }
 }

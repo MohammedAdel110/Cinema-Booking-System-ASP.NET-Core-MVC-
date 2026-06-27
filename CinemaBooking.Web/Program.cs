@@ -26,6 +26,13 @@ builder.Services.AddIdentity<CinemaBooking.Domain.Entities.ApplicationUser, Micr
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Auth/Login";
+    options.LogoutPath = "/Auth/Logout";
+    options.AccessDeniedPath = "/Auth/AccessDenied";
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

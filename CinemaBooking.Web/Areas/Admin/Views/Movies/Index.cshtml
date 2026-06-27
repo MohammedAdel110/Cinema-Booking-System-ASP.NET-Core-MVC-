@@ -5,18 +5,18 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
     <div>
-        <h2 class="fw-bold mb-0 text-dark">Movies</h2>
-        <p class="text-muted mb-0">Manage all movies in the cinema</p>
+        <h2 class="fw-bold mb-0 text-white">Movies</h2>
+        <p class="text-white-50 mb-0">Manage all movies in the cinema</p>
     </div>
     <a asp-action="Create" class="btn btn-primary shadow-sm hover-lift">
         <i class="fa-solid fa-plus me-2"></i> Add New Movie
     </a>
 </div>
 
-<div class="card shadow-sm border-0" data-aos="fade-up">
+<div class="card glass-panel border-0 shadow-lg" data-aos="fade-up">
     <div class="card-body p-0">
         <div class="table-responsive p-4">
-            <table class="table dataTable table-hover align-middle w-100">
+            <table class="table dataTable table-hover align-middle w-100 text-white">
                 <thead>
                     <tr>
                         <th width="80">Poster</th>
@@ -41,26 +41,26 @@
                                 }
                             </td>
                             <td>
-                                <div class="fw-bold text-dark fs-6">@item.Title</div>
-                                <span class="badge bg-primary-soft mt-1">@item.CategoryName</span>
+                                <div class="fw-bold text-white fs-6">@item.Title</div>
+                                <span class="badge bg-primary-soft mt-1 text-light">@item.CategoryName</span>
                             </td>
                             <td>
-                                <div class="d-flex align-items-center text-muted">
+                                <div class="d-flex align-items-center text-white-50">
                                     <i class="fa-regular fa-clock me-2 text-warning"></i> @item.DurationMinutes mins
                                 </div>
                             </td>
                             <td>
-                                <div class="d-flex align-items-center text-muted">
+                                <div class="d-flex align-items-center text-white-50">
                                     <i class="fa-regular fa-calendar me-2 text-info"></i> @item.ReleaseDate.ToString("MMM dd, yyyy")
                                 </div>
                             </td>
                             <td class="text-end">
                                 <div class="d-flex justify-content-end gap-2">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-action edit" data-bs-toggle="tooltip" title="Edit Movie">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-action edit border-0 shadow-sm" style="background: rgba(255,255,255,0.1); color: white;" data-bs-toggle="tooltip" title="Edit Movie">
                                         <i class="fa-solid fa-pen"></i>
                                     </a>
                                     <form id="delete-form-@item.Id" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
-                                        <button type="button" onclick="confirmDelete('delete-form-@item.Id')" class="btn btn-action delete" data-bs-toggle="tooltip" title="Delete Movie">
+                                        <button type="button" onclick="confirmDelete('delete-form-@item.Id')" class="btn btn-action delete border-0 shadow-sm" style="background: rgba(255,255,255,0.1); color: #ef4444;" data-bs-toggle="tooltip" title="Delete Movie">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </form>
@@ -73,6 +73,85 @@
         </div>
     </div>
 </div>
+
+@section Styles {
+    <style>
+        /* Make table cells transparent and text white */
+        .table {
+            color: #fff;
+        }
+        .table>:not(caption)>*>* {
+            background-color: transparent;
+            color: #fff;
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+        .table-hover>tbody>tr:hover>* {
+            background-color: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+
+        /* Fix DataTables styling for dark theme */
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_processing,
+        .dataTables_wrapper .dataTables_paginate {
+            color: #fff !important;
+            margin-bottom: 1rem;
+        }
+
+        .dataTables_wrapper .dataTables_filter input,
+        .dataTables_wrapper .dataTables_length select {
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            border-radius: 6px;
+            padding: 4px 8px;
+        }
+        
+        .dataTables_wrapper .dataTables_filter input:focus,
+        .dataTables_wrapper .dataTables_length select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: #fff !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
+            border-radius: 6px;
+            margin: 0 2px;
+            background: rgba(255,255,255,0.05) !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: rgba(255,255,255,0.15) !important;
+            color: #fff !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            background: var(--primary) !important;
+            color: #fff !important;
+            border-color: var(--primary) !important;
+        }
+        
+        /* Make sorting icons white */
+        table.dataTable thead .sorting:before,
+        table.dataTable thead .sorting:after,
+        table.dataTable thead .sorting_asc:before,
+        table.dataTable thead .sorting_asc:after,
+        table.dataTable thead .sorting_desc:before,
+        table.dataTable thead .sorting_desc:after {
+            opacity: 0.5;
+        }
+        table.dataTable thead .sorting_asc:before,
+        table.dataTable thead .sorting_desc:after {
+            opacity: 1;
+        }
+    </style>
+}
 
 @section Scripts {
     <script>
